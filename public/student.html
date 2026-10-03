@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student - UTP Lecture</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <h1>👋 Join the Lecture</h1>
+      <p>Descriptive Statistics in Practice · Industry Insights and Responsible AI</p>
+      <div class="login-form">
+        <input type="text" id="studentName" placeholder="Your Name (e.g. Aina_123)" class="input" maxlength="30">
+        <button onclick="login()" class="btn btn-primary btn-lg">Join Session</button>
+      </div>
+      <p class="login-hint">Use your real name so the lecturer can see you!</p>
+    </div>
+  </div>
+
+  <!-- Main Student Interface -->
+  <div id="studentApp" class="student-app hidden">
+    <!-- Top Bar -->
+    <header class="student-header">
+      <div class="student-info">
+        <span id="displayName" class="student-name"></span>
+        <span id="displayGroup" class="student-group"></span>
+        <button onclick="logout()" class="btn btn-sm btn-logout" title="Log out and use a different name">Logout</button>
+      </div>
+      <div class="student-score-display">
+        <span class="score-block">
+          ⭐ <span id="myScore">0</span> pts
+          <span class="student-rank" id="myRank">#-</span>
+          <span class="score-note" id="scoreBreakdown">0 yours</span>
+        </span>
+        <span class="team-score-block">
+          👥 <span id="teamScore">0</span> pts
+          <span class="student-rank" id="teamRank">#-</span>
+          <span class="score-note" id="teamBreakdown">team bonus applies to you</span>
+        </span>
+      </div>
+    </header>
+
+    <div class="student-body">
+      <!-- Left: Current Slide Content -->
+      <div class="student-slide">
+        <div id="slideContent" class="slide-content-compact slide-content">
+          <div class="waiting-msg">Waiting for lecturer to start the presentation...</div>
+        </div>
+
+        <!-- Active Quiz -->
+        <div id="quizArea" class="quiz-area hidden">
+          <div class="quiz-card">
+            <h3 id="quizTitle">📝 Quiz Question</h3>
+            <p id="quizQuestionText" class="quiz-question"></p>
+            <div id="quizOptions" class="quiz-options"></div>
+            <div id="quizResult" class="quiz-result hidden"></div>
+          </div>
+        </div>
+
+        <!-- Active Survey -->
+        <div id="surveyArea" class="survey-area hidden">
+          <div class="survey-card">
+            <h3 id="surveyTitle">📋 Poll / Survey</h3>
+            <p id="surveyQuestionText"></p>
+            <div id="surveyOptions" class="survey-options"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Actions Panel -->
+      <div class="student-actions">
+        <!-- Send Feedback -->
+        <div class="action-card">
+          <h3>💬 Feedback</h3>
+          <textarea id="feedbackText" placeholder="A word or two — e.g. clear, fun, too fast" rows="2" class="input" maxlength="30"></textarea>
+          <div class="rating-stars" id="ratingStars">
+            <span onclick="setRating(1)">☆</span>
+            <span onclick="setRating(2)">☆</span>
+            <span onclick="setRating(3)">☆</span>
+            <span onclick="setRating(4)">☆</span>
+            <span onclick="setRating(5)">☆</span>
+          </div>
+          <button onclick="sendFeedback()" class="btn btn-primary btn-sm">Send (+5 pts)</button>
+        </div>
+
+        <!-- Ask Question -->
+        <div class="action-card">
+          <h3>❓ Ask a Question</h3>
+          <input type="text" id="questionInput" placeholder="Type your question..." class="input">
+          <button onclick="sendQuestion()" class="btn btn-primary btn-sm">Submit (+3 pts)</button>
+        </div>
+
+        <!-- Scoreboard Preview -->
+        <div class="action-card">
+          <h3>🏆 Top 10</h3>
+          <div id="miniLeaderboard" class="mini-leaderboard">
+            <div class="loading-text">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/rate-limit-client.js"></script>
+  <script src="/js/slides.js"></script>
+  <script src="/js/student.js"></script>
+</body>
+</html>

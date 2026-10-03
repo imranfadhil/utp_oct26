@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lecturer Console - UTP Lecture</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Password Login Screen -->
+  <div id="lecturerLogin" class="login-screen">
+    <div class="login-card">
+      <h1>🔐 Lecturer Access</h1>
+      <p>Enter the admin password to access the console.</p>
+      <div class="login-form">
+        <input type="password" id="lecturerPassword" placeholder="Admin password" class="input" onkeydown="if(event.key==='Enter') lecturerLogin()">
+        <button onclick="lecturerLogin()" class="btn btn-primary btn-lg">Unlock</button>
+        <p id="lecturerLoginError" class="login-hint" style="color:#ef4444;display:none;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="lecturerApp" class="lecturer-layout hidden">
+    <!-- Top Bar -->
+    <header class="lecturer-header">
+      <h1>🎓 Lecturer Console</h1>
+      <div class="lecturer-controls">
+        <button id="btnOutline" class="btn btn-sm" onclick="toggleOutline()" title="Toggle slide outline">☰ Outline</button>
+        <button id="btnStart" class="btn btn-success" onclick="startSession()">▶ Start Session</button>
+        <button id="btnStop" class="btn btn-danger" onclick="stopSession()" disabled>■ Stop</button>
+        <button id="btnReset" class="btn btn-warning" onclick="resetSession()">⟳ Reset All</button>
+        <span id="sessionStatus" class="status-badge">Inactive</span>
+      </div>
+    </header>
+
+    <div class="lecturer-body">
+      <!-- Left: Slide Outline (quick jump) -->
+      <aside class="lecturer-outline" id="lecturerOutline">
+        <div class="outline-head">
+          <span>📑 Outline</span>
+          <span class="outline-count" id="outlineCount"></span>
+        </div>
+        <ul class="outline-list" id="outlineList"></ul>
+      </aside>
+
+      <!-- Center: Slide Navigator + Slide Preview -->
+      <div class="lecturer-main">
+        <div class="slide-nav">
+          <button onclick="goSlide(-1)" class="btn btn-sm">◀</button>
+          <span id="slideIndicator">Slide 1 / 20</span>
+          <button onclick="goSlide(1)" class="btn btn-sm">▶</button>
+          <span class="slide-nav-hint">← → keys</span>
+        </div>
+
+        <div class="slide-viewer" id="slideViewer">
+          <div class="slide-content" id="slideContent">
+            <!-- Slides rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Lecture Notes (talking points for the current slide) -->
+        <div class="lecture-notes">
+          <div class="notes-head">
+            <h3>🗒️ Lecture Notes</h3>
+            <span class="notes-slide" id="notesSlideLabel">Slide 1</span>
+          </div>
+          <div id="lectureNotes" class="notes-body">
+            <!-- Filled by renderNotes() -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Live Feed -->
+      <div class="lecturer-sidebar">
+        <div class="sidebar-panel">
+          <h3>👥 Students Online <span id="studentCount">0</span> <span id="studentCountTotal" style="font-weight:400;opacity:0.7;font-size:0.85em;">/ 0</span></h3>
+          <ul id="studentList" class="student-list"></ul>
+        </div>
+        <div class="sidebar-panel">
+          <h3>💬 Questions from Students</h3>
+          <div id="questionFeed" class="question-feed"></div>
+        </div>
+        <div class="sidebar-panel">
+          <h3>📊 Quick Stats</h3>
+          <div id="quickStats" class="quick-stats">
+            <div>Quizzes: <span id="statQuiz">0</span></div>
+            <div>Surveys: <span id="statSurvey">0</span></div>
+            <div>Feedback: <span id="statFeedback">0</span></div>
+            <div>Questions: <span id="statQuestions">0</span></div>
+            <div>Total Points: <span id="statPoints">0</span></div>
+          </div>
+        </div>
+        <div class="sidebar-panel">
+          <h3>📚 Question Bank (Slide <span id="bankSlideLabel">1</span>)</h3>
+          <div id="questionBankList" class="question-bank-list">
+            <div class="loading-text">Loading questions...</div>
+          </div>
+          <div class="bank-add-form">
+            <input type="text" id="bankNewQuestion" placeholder="New question..." class="input">
+            <input type="text" id="bankNewOptA" placeholder="Option A" class="input">
+            <input type="text" id="bankNewOptB" placeholder="Option B" class="input">
+            <input type="text" id="bankNewOptC" placeholder="Option C" class="input">
+            <input type="text" id="bankNewOptD" placeholder="Option D" class="input">
+            <div class="quiz-row">
+              <label>Correct: <select id="bankNewCorrect"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></label>
+              <label>Pts: <input type="number" id="bankNewPoints" value="10" min="1" class="input-sm"></label>
+              <button onclick="addBankQuestion()" class="btn btn-primary btn-sm">+ Add</button>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-panel">
+          <h3>📋 Survey / Poll</h3>
+          <p class="panel-hint">Pick a ready-made prompt, or type your own. Students answer on a 5-point agree scale.</p>
+          <div id="surveyBankList" class="survey-bank-list">
+            <div class="loading-text">Loading prompts...</div>
+          </div>
+          <div class="quick-survey">
+            <input type="text" id="surveyQuestion" placeholder="Or type your own question..." class="input">
+            <button onclick="sendSurvey()" class="btn btn-primary btn-sm">Send Survey</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/rate-limit-client.js"></script>
+  <script src="/js/slides.js"></script>
+  <script src="/js/lecturer.js"></script>
+</body>
+</html>

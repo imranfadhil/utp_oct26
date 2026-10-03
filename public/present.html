@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Present - UTP Lecture</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    html, body { height: 100%; margin: 0; background: #0f172a; }
+    .present-stage {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #0f172a;
+    }
+    .present-slide {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3vh 4vw;
+      overflow: hidden;
+    }
+    .present-card {
+      background: #fff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 1100px;
+      max-height: 84vh;
+      overflow-y: auto;
+      padding: 40px 48px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      font-size: 1.35rem;
+      line-height: 1.5;
+    }
+    .present-card h1 { font-size: 2.6rem; }
+    .present-card h2 { font-size: 2rem; }
+    /* Bottom control bar */
+    .present-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 14px;
+      background: #1e293b;
+      color: #e2e8f0;
+    }
+    .present-bar button {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .present-bar button:disabled { background: #475569; cursor: not-allowed; }
+    .present-counter { font-size: 1rem; min-width: 120px; text-align: center; }
+    .present-status {
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #334155;
+    }
+    .present-status.live { background: #059669; }
+    .present-hint { font-size: 0.75rem; color: #94a3b8; }
+
+    /* ── Live dashboard excerpt (click to open full dashboard) ───────── */
+    .present-slide { position: relative; }
+    .excerpt {
+      position: absolute;
+      right: 2vw;
+      bottom: 2vh;
+      width: 300px;
+      background: rgba(30, 41, 59, 0.94);
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+      font-size: 0.82rem;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .excerpt:hover, .excerpt:focus-visible {
+      transform: translateY(-3px);
+      border-color: #2563eb;
+      outline: none;
+    }
+    .excerpt[hidden] { display: none; }
+    .excerpt-head {
+      display: flex; align-items: center; justify-content: space-between;
+      font-weight: 700; margin-bottom: 10px; font-size: 0.85rem;
+    }
+    .excerpt-live {
+      font-size: 0.62rem; padding: 2px 8px; border-radius: 10px;
+      background: #dc2626; color: #fff; letter-spacing: 0.5px;
+    }
+    .excerpt-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .excerpt-metric { background: #0f172a; border-radius: 8px; padding: 8px 4px; text-align: center; }
+    .excerpt-metric b { display: block; font-size: 1.15rem; color: #60a5fa; }
+    .excerpt-metric span { font-size: 0.64rem; color: #94a3b8; }
+    .excerpt-section { margin-top: 10px; }
+    .excerpt-label { font-size: 0.64rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.6px; }
+    .excerpt-row { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; }
+    .excerpt-row span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .excerpt-row b { color: #34d399; }
+    .excerpt-stats { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+    .excerpt-chip { background: #0f172a; border-radius: 6px; padding: 2px 7px; font-size: 0.7rem; }
+    .excerpt-chip i { color: #94a3b8; font-style: normal; }
+    .excerpt-cta { margin-top: 10px; font-size: 0.68rem; color: #60a5fa; text-align: center; }
+    .excerpt-empty { color: #94a3b8; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+  <div class="present-stage">
+    <div class="present-slide">
+      <div class="present-card slide-content" id="slideContent">
+        <!-- Rendered by present.js -->
+      </div>
+      <div class="excerpt" id="dashExcerpt" role="button" tabindex="0"
+           aria-label="Live dashboard excerpt — activate to open the full dashboard"
+           onclick="openDashboard()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDashboard();}">
+        <div class="excerpt-head">
+          <span>📊 Live Dashboard</span>
+          <span class="excerpt-live">LIVE</span>
+        </div>
+        <div id="excerptBody">
+          <div class="excerpt-empty">Waiting for student activity…</div>
+        </div>
+        <div class="excerpt-cta">Click to open full dashboard →</div>
+      </div>
+    </div>
+    <div class="present-bar">
+      <span class="present-counter" id="counter">—</span>
+      <span class="present-status" id="liveStatus">Session not active</span>
+      <button id="btnFullscreen" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+      <button id="btnExcerpt" onclick="toggleExcerpt()">📊 Hide stats</button>
+      <span class="present-hint">Lecturer controls slides · F = fullscreen · D = dashboard</span>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/rate-limit-client.js"></script>
+  <script src="/js/qrcode.js"></script>
+  <script src="/js/slides.js"></script>
+  <script src="/js/present.js"></script>
+</body>
+</html>

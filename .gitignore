@@ -1,0 +1,12 @@
+.venv
+.vscode
+node_modules/
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+.env
+.DS_Store
+npm-debug.log*
+*.zip
+*.pem

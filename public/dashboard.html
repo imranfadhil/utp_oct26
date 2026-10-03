@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Dashboard - UTP Lecture</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <h1>📊 Live Dashboard</h1>
+      <div class="dashboard-meta">
+        <span id="dashTotalPoints">0</span> Total Points ·
+        <span id="dashStudents">0</span> Active ·
+        <span id="dashTotalStudents">0</span> Total ·
+        <span id="dashResponses">0</span> Responses
+      </div>
+      <div class="dashboard-actions">
+        <a href="/present.html" id="backToPresent" class="btn btn-primary btn-sm" hidden>← Back to Present</a>
+        <button onclick="location.reload()" class="btn btn-sm">Refresh</button>
+      </div>
+    </header>
+
+    <!-- Row 1: Group Leaderboard + Score Distribution Histogram -->
+    <div class="dash-row">
+      <div class="dash-card dash-card-half">
+        <h2>🏅 Group Leaderboard</h2>
+        <div id="groupLeaderboard" class="group-leaderboard"></div>
+      </div>
+      <div class="dash-card dash-card-half">
+        <h2>📈 Score Distribution <span class="badge-live">LIVE</span></h2>
+        <div class="histogram-container">
+          <div id="histogram" class="histogram"></div>
+        </div>
+        <div class="histogram-labels">
+          <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span><span>70</span><span>80</span><span>90+</span>
+        </div>
+        <div id="scoreStats" class="score-stats"></div>
+      </div>
+    </div>
+
+    <!-- Row 2: Top Students + Feedback Word Cloud -->
+    <div class="dash-row">
+      <div class="dash-card dash-card-half">
+        <h2>⭐ Top Students</h2>
+        <div id="topStudents" class="top-students"></div>
+      </div>
+      <div class="dash-card dash-card-half">
+        <h2>☁️ Feedback Word Cloud <span class="badge-live">LIVE</span></h2>
+        <div id="wordCloud" class="word-cloud"></div>
+      </div>
+    </div>
+
+    <!-- Row 3: Engagement Summary + Group Comparison -->
+    <div class="dash-row">
+      <div class="dash-card dash-card-half">
+        <h2>📋 Engagement Summary</h2>
+        <div id="engagementSummary" class="engagement-summary"></div>
+      </div>
+      <div class="dash-card dash-card-half">
+        <h2>📊 Group Comparison</h2>
+        <div id="groupComparison" class="group-comparison"></div>
+      </div>
+    </div>
+
+    <!-- Row 4: Survey Results -->
+    <div class="dash-row">
+      <div class="dash-card dash-card-full">
+        <h2>📋 Survey Results <span class="badge-live">LIVE</span></h2>
+        <div id="surveyResults" class="survey-results-list"></div>
+      </div>
+    </div>
+
+    <!-- Row 5: Recent Activity Feed -->
+    <div class="dash-row">
+      <div class="dash-card dash-card-full">
+        <h2>🕐 Recent Activity</h2>
+        <div id="activityFeed" class="activity-feed"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/rate-limit-client.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

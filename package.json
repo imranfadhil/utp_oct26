@@ -1,0 +1,22 @@
+{
+  "name": "utp-oct26-lecture",
+  "version": "1.0.0",
+  "description": "Interactive lecture system for UTP Adjunct Lecture - Descriptive Statistics in Practice: Industry Insights and Responsible AI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "simulate": "node scripts/simulate-students.js",
+    "test:rate-limit": "node scripts/test-rate-limit.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "express": "^4.21.0",
+    "express-rate-limit": "^8.7.0",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "qrcode-generator": "^2.0.4",
+    "socket.io-client": "^4.8.3"
+  }
+}

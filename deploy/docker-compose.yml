@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  lecture-app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    ports:
+      - "80:3000"
+    volumes:
+      - lecture-data:/data
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - DB_PATH=/data/lecture.db
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      # Clients reach the app through cloudflared, so request IPs arrive in
+      # X-Forwarded-For and must be trusted for the IP-based rate limits to see
+      # the student's real address instead of the tunnel's.
+      - TRUST_PROXY=1
+    restart: unless-stopped
+
+  # Cloudflare Tunnel — provides HTTPS without needing a domain
+  # Tunnel URL is printed by do-sync.bat after startup
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --url http://lecture-app:3000
+    depends_on:
+      - lecture-app
+    restart: unless-stopped
+
+volumes:
+  lecture-data:
