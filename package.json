@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
+    "export:slides": "node scripts/export-slides.js",
     "simulate": "node scripts/simulate-students.js",
     "test:rate-limit": "node scripts/test-rate-limit.js"
   },
